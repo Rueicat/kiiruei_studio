@@ -1,0 +1,102 @@
+/* Noto Sans TC 字型定義 */
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 100;
+    src: url('/fonts/NotoSansTC-Thin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 200;
+    src: url('/fonts/NotoSansTC-ExtraLight.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 300;
+    src: url('/fonts/NotoSansTC-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 400;
+    src: url('/fonts/NotoSansTC-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 500;
+    src: url('/fonts/NotoSansTC-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 600;
+    src: url('/fonts/NotoSansTC-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 700;
+    src: url('/fonts/NotoSansTC-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 800;
+    src: url('/fonts/NotoSansTC-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 900;
+    src: url('/fonts/NotoSansTC-Black.ttf') format('truetype');
+}
+
+/* 全站應用 Noto Sans TC */
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400; /* 預設 Regular */
+    line-height: 1.6;
+}
+
+/* 不同標題對應不同字重 */
+h1 {
+    font-weight: 900; /* Black */
+}
+
+h2 {
+    font-weight: 800; /* ExtraBold */
+}
+
+h3 {
+    font-weight: 700; /* Bold */
+}
+
+h4 {
+    font-weight: 600; /* SemiBold */
+}
+
+h5 {
+    font-weight: 500; /* Medium */
+}
+
+h6 {
+    font-weight: 400; /* Regular */
+}
+
+/* 斜體 (Noto Sans TC 沒有內建 Italic，但可以用 `font-style: oblique` 模擬) */
+em {
+    font-style: oblique;
+}
+
+/* 粗體 */
+strong {
+    font-weight: 700; /* Bold */
+}
+
+/* 讓程式碼區塊維持原字型 */
+code, pre {
+    font-family: 'Source Code Pro', monospace;
+}
+
