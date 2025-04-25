@@ -9,7 +9,8 @@ title = "kiiruei_studio"
 command = "mdbook-admonish"
 assets_version = "3.0.3" # do not edit: managed by `mdbook-admonish install`
 
+[preprocessor.alerts]
 
 [output.html]
-additional-css = ["./theme/custom.css", "./theme/mdbook-admonish.css"]
-copy-files = ["download"]
+
+additional-css = ["./theme/custom.css", "./theme/catppuccin.css", "./theme/mdbook-admonish.css"]
