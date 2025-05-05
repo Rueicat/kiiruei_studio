@@ -1,6 +1,6 @@
 # Introduction  
 > [!TIP]
-> * 如有任何問題, 請寫信至<span style='color: brown;'>mhjpj73@gmail.com</span>, 將儘快回覆您的問題
+> * 如有任何問題, 請寫信至<span style='color: brown;'>support@kiiruei.studio</span>, 將儘快回覆您的問題
 > * 目前不支援中文字的搜尋功能
 
 #### 緣由:  
