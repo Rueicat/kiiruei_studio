@@ -1,16 +1,20 @@
 [book]
-authors = ["mhjpj73"]
+authors = ["RueiLing"]
 language = "zh"
-multilingual = false
 src = "src"
 title = "kiiruei_studio"
 
+
+## 1. cargo install mdbook-admonish
+## 2. mdbook-admonish install, then it will install the packages in the theme
 [preprocessor.admonish]
 command = "mdbook-admonish"
-assets_version = "3.0.3" # do not edit: managed by `mdbook-admonish install`
+assets_version = "3.1.0" # do not edit: managed by `mdbook-admonish install`
 
+# Cargo install mdbook-alerts
+# 我覺得可以和mdbook-admonish交互使用
 [preprocessor.alerts]
 
+# 漂亮清楚的中文字型
 [output.html]
-
-additional-css = ["./theme/custom.css", "./theme/catppuccin.css", "./theme/mdbook-admonish.css"]
+additional-css = ["./theme/custom.css", "./theme/mdbook-admonish.css"]

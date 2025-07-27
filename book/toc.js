@@ -8,9 +8,9 @@ class MDBookSidebarScrollbox extends HTMLElement {
         super();
     }
     connectedCallback() {
-        this.innerHTML = '<ol class="chapter"><li class="chapter-item expanded "><a href="introuction.html"><strong aria-hidden="true">1.</strong> 總攬</a></li><li class="chapter-item expanded affix "><li class="part-title">辦公室改善方案</li><li class="chapter-item expanded "><a href="office_tools.html"><strong aria-hidden="true">2.</strong> 辦公室生產力工具</a></li><li class="chapter-item expanded affix "><li class="part-title">醫療環境改善方案</li><li class="chapter-item expanded "><a href="medical_RPA.html"><strong aria-hidden="true">3.</strong> 醫療環境維護自動方案</a></li><li class="chapter-item expanded affix "><li class="part-title">美術設計改善方案</li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 網站設計</div></li><li class="chapter-item expanded affix "><li class="part-title">人生改善方案</li><li class="chapter-item expanded affix "><li class="part-title">測試區</li><li class="chapter-item expanded "><a href="test.html"><strong aria-hidden="true">5.</strong> 渲染效果測試</a></li></ol>';
+        this.innerHTML = '<ol class="chapter"><li class="chapter-item expanded "><a href="update_journal.html"><strong aria-hidden="true">1.</strong> 最新消息</a></li><li class="chapter-item expanded "><a href="長照2_0簡介.html"><strong aria-hidden="true">2.</strong> 長期照顧2.0服務項目</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="長照2_0服務項目/1照顧服務.html"><strong aria-hidden="true">2.1.</strong> 照顧服務</a></li><li class="chapter-item expanded "><a href="service/report.html"><strong aria-hidden="true">2.2.</strong> 評估報告</a></li></ol></li><li class="chapter-item expanded "><a href="service/nas.html"><strong aria-hidden="true">3.</strong> 雲端服務(private)</a></li><li class="chapter-item expanded "><a href="service/budget.html"><strong aria-hidden="true">4.</strong> 記帳服務(private)</a></li><li class="chapter-item expanded "><a href="admonish_example.html"><strong aria-hidden="true">5.</strong> 渲染測試</a></li></ol>';
         // Set the current, active page, and reveal it if it's hidden
-        let current_page = document.location.href.toString().split("#")[0];
+        let current_page = document.location.href.toString().split("#")[0].split("?")[0];
         if (current_page.endsWith("/")) {
             current_page += "index.html";
         }
