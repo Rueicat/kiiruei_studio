@@ -7,7 +7,7 @@
     - [個案管理平台](./service/access.md)
 - [雲端服務(private)](./service/nas.md)
 - [記帳服務(private)](./service/budget.md)
-- [演算法algorithms](./algorithms/algo_intro.md)
+- [演算法(algorithms)研究](./algorithms/algo_intro.md)
 - [心術](./intentions/resolution_md.md)
     - [心術](./intentions/intensions.md)
 - [渲染測試](./admonish_example.md)
