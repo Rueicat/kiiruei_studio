@@ -18,3 +18,6 @@ assets_version = "3.1.0" # do not edit: managed by `mdbook-admonish install`
 # 漂亮清楚的中文字型
 [output.html]
 additional-css = ["./theme/custom.css", "./theme/mdbook-admonish.css"]
+
+#katex處理數學符號或公式
+[preprocessor.katex]

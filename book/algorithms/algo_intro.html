@@ -168,7 +168,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <style>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<style>
 .mdbook-alerts {
   padding: 8px 16px;
   margin-bottom: 16px;
@@ -239,9 +240,16 @@
 <p>performance is design</p>
 <p>演算法個人認為, 是一種學習如何"設計最有效率決策"的技術, 可以在使用AI做出大部分架構與解決方案後, 再次做優化與改善. 是綜合能力, 也是思維底層核心重要的價值之一.</p>
 <p>準備一個自己比較熟悉的程式語言, 開始探討演算法...</p>
+<p>為了練習思考邏輯, 會使用三種不同類型的程式語言當作練習...</p>
+<ul>
+<li>powershell: 物件導向的shell + 腳本語言 for .NET生態</li>
+<li>bash: 文字導向的shell + 腳本語言 for unix生態</li>
+<li>rust: 系統級別語言</li>
+</ul>
+<p>下面嘗試練習幾個範例看自己受不受的了...</p>
 <h2 id="插入排序"><a class="header" href="#插入排序">插入排序</a></h2>
 <p><strong>輸入</strong> -&gt; n個數字</p>
-<p><strong>輸出</strong> -&gt; 重新排序$a_1 \leq a_2 \leq a_3 \leq ... \leq a_n$</p>
+<p><strong>輸出</strong> -&gt; 重新排序<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord">...</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
 <p>使用bubble sort</p>
 <p>物件導向語言練習(powershell)</p>
 <pre><code class="language-powershell">cls
@@ -262,7 +270,7 @@ for ($i = 0; $i -lt $a.length; $i++) {
 Write-Host ($a -join "-&gt;")
 </code></pre>
 <p>文字導向的語言練習(bash)</p>
-<pre><code class="language-Bash">#!/bin/bash
+<pre><code class="language-bash">#!/bin/bash
 
 arr=(2 6 88 98 333 999)
 len=${#arr[@]}
@@ -281,7 +289,7 @@ done
 echo "${arr[@]}"
 </code></pre>
 <p>現代語言練習(Rust)</p>
-<pre><code class="language-Rust">use std::io;
+<pre><pre class="playground"><code class="language-rust">use std::io;
 
 fn bubble_sort (arr: &amp;mut Vec&lt;u16&gt;) {
     let n = arr.len();
@@ -307,8 +315,7 @@ fn main () {
     println!("按Enter退出...");
     let mut enter = String::new();
     io::stdin().read_line(&amp;mut enter).unwrap();
-}
-</code></pre>
+}</code></pre></pre>
 <h2 id="加總"><a class="header" href="#加總">加總</a></h2>
 <p><strong>輸入</strong> -&gt; 給一個數字陣列</p>
 <p><strong>輸出</strong> -&gt; 加總</p>
@@ -332,7 +339,7 @@ Write-Host ""
 Write-Host "命令列的方法: $result2"
 </code></pre>
 <p>Bash練習(同樣一般script和命令列兩種方法)</p>
-<pre><code class="language-Bash">#!/bin/bash
+<pre><code class="language-bash">#!/bin/bash
 
 arr=(2 2 3 4 5)
 result=0
@@ -349,7 +356,7 @@ echo "使用命令列的方式"
 echo "${arr[@]}" | tr " " "+" | bc
 </code></pre>
 <p>使用Rust</p>
-<pre><code class="language-Rust">fn main () {
+<pre><pre class="playground"><code class="language-rust">fn main () {
     let arr = vec![1, 2, 4, 88];   //vec&lt;T&gt; 在heap上, 可變大小
     let mut result = 0;
 
@@ -363,8 +370,7 @@ echo "${arr[@]}" | tr " " "+" | bc
     let aa = [1, 2, 4, 88];       //一般陣列, 在stack上, 不可變大小
     let result2: u8 = aa.iter().sum();
     println!("iterator method result: {}", result2);
-}
-</code></pre>
+}</code></pre></pre>
 <h2 id="線性搜尋test"><a class="header" href="#線性搜尋test">線性搜尋test</a></h2>
 <p><strong>輸入</strong> -&gt; 陣列有n個數字(a_1, a_2, a_3, ..., a_n), 跟一個值x</p>
 <p><strong>輸出</strong> -&gt; 顯示x在陣列中為第i個位置, 如果陣列中沒有x, i 顯示為nil</p>
@@ -460,6 +466,51 @@ else
         echo "test2 failed: $result should be nil"
 fi
 </code></pre>
+<p>rust和測試工具一起練習</p>
+<pre><pre class="playground"><code class="language-rust">fn find_index&lt;T: PartialEq&gt; (array: &amp;[T], x: &amp;T) -&gt; Option&lt;String&gt; {
+    for (i, val) in array.iter().enumerate() {   //enum -&gt; (index: usize, value: &amp;T)
+        if val == x {
+            return Some((i+1).to_string());
+        }
+    }
+    None
+}
+
+
+fn main() {
+/*  直接用函數處理  
+   
+    let a = vec!["1","2","6","7","8","4","3","x","2222","333","666"];
+    let word = "Y";
+    let result = find_index(&amp;a, &amp;word);
+
+    println!("{:?}", result.unwrap_or(("nil").to_string()))
+*/
+}
+
+//用測試的方式
+#[cfg(test)]
+
+mod tests {
+    use super::*;
+
+    const A: [&amp;str; 11] = ["1","2","6","7","8","4","3","x","2222","333","666"];
+
+    #[test]
+    fn returns_index() {
+       let word = "x";
+       let result = find_index(&amp;A, &amp;word).unwrap_or(("nil").to_string());
+       assert_eq!(result, "8");
+    }
+
+    #[test]
+    fn returns_nil() {
+       let word = "Z";
+       let result = find_index(&amp;A, &amp;word).unwrap_or(("nil").to_string());
+       assert_eq!(result, "nil");
+    }
+}
+</code></pre></pre>
 
                     </main>
 
@@ -469,7 +520,7 @@ fi
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../intentions/resolution_md.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../algorithms/data_struct.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -483,7 +534,7 @@ fi
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../intentions/resolution_md.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../algorithms/data_struct.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -5,6 +5,14 @@ performance is design
 
 準備一個自己比較熟悉的程式語言, 開始探討演算法...
 
+為了練習思考邏輯, 會使用三種不同類型的程式語言當作練習...
+
+- powershell: 物件導向的shell + 腳本語言 for .NET生態
+- bash: 文字導向的shell + 腳本語言 for unix生態
+- rust: 系統級別語言
+
+下面嘗試練習幾個範例看自己受不受的了...
+
 ## 插入排序
 
 **輸入** -> n個數字
@@ -36,7 +44,7 @@ Write-Host ($a -join "->")
 
 文字導向的語言練習(bash)
 
-```Bash
+```bash
 #!/bin/bash
 
 arr=(2 6 88 98 333 999)
@@ -58,7 +66,7 @@ echo "${arr[@]}"
 
 現代語言練習(Rust)
 
-```Rust
+```rust
 use std::io;
 
 fn bubble_sort (arr: &mut Vec<u16>) {
@@ -118,7 +126,7 @@ Write-Host "命令列的方法: $result2"
 
 Bash練習(同樣一般script和命令列兩種方法)
 
-```Bash
+```bash
 #!/bin/bash
 
 arr=(2 2 3 4 5)
@@ -138,7 +146,7 @@ echo "${arr[@]}" | tr " " "+" | bc
 
 使用Rust
 
-```Rust
+```rust
 fn main () {
     let arr = vec![1, 2, 4, 88];   //vec<T> 在heap上, 可變大小
     let mut result = 0;
@@ -260,4 +268,53 @@ if [[ "$result" == "nil" ]]; then
 else
         echo "test2 failed: $result should be nil"
 fi
+```
+
+
+rust和測試工具一起練習
+```rust
+fn find_index<T: PartialEq> (array: &[T], x: &T) -> Option<String> {
+    for (i, val) in array.iter().enumerate() {   //enum -> (index: usize, value: &T)
+        if val == x {
+            return Some((i+1).to_string());
+        }
+    }
+    None
+}
+
+
+fn main() {
+/*  直接用函數處理  
+   
+    let a = vec!["1","2","6","7","8","4","3","x","2222","333","666"];
+    let word = "Y";
+    let result = find_index(&a, &word);
+
+    println!("{:?}", result.unwrap_or(("nil").to_string()))
+*/
+}
+
+//用測試的方式
+#[cfg(test)]
+
+mod tests {
+    use super::*;
+
+    const A: [&str; 11] = ["1","2","6","7","8","4","3","x","2222","333","666"];
+
+    #[test]
+    fn returns_index() {
+       let word = "x";
+       let result = find_index(&A, &word).unwrap_or(("nil").to_string());
+       assert_eq!(result, "8");
+    }
+
+    #[test]
+    fn returns_nil() {
+       let word = "Z";
+       let result = find_index(&A, &word).unwrap_or(("nil").to_string());
+       assert_eq!(result, "nil");
+    }
+}
+
 ```
