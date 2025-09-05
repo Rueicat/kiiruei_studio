@@ -348,3 +348,254 @@ done
 ```
 
 
+## 找兩數和
+
+給一個陣列nums 和 一個 數字target, 從陣列中找到兩個數字加起來等於target, 並輸出兩數在陣列的位置.
+
+例如:
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+
+因為陣列第一個0和的二個的7相加等於9.
+
+
+```rust
+//2.53MB 記憶體
+use std::collections::HashMap;
+
+pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut map = HashMap::new();
+
+    for(i, &num) in nums.iter().enumerate() {
+        let complement = target - num;      //厲害的地方
+
+        if let Some(&j) = map.get(&complement) { //第一次是空的, 所以會直接跳出
+            return vec![j as i32, i as i32];
+        }
+        map.insert(num, i);
+    }
+    
+    vec![]
+}
+
+fn main() {
+    let nums: Vec<i32> = vec![3,2,4];
+    let target: i32 = 6; 
+    let result = two_sum(nums, target);
+    println!("{:?}", result);
+}
+```
+
+上述是用雜湊表的方法, 讓時間複雜度維持O(n), 但資料量很小, 多一個雜湊表記憶體消耗比較大, leedcode顯示這樣寫消耗2.53MB, 用雙loop比較省記憶體
+
+```rust
+// 2.1MB記憶體
+
+fn double_loop_add_sum (nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut result: Vec<i32> =Vec::new();
+    for i in 0..nums.len() -1 {
+        for j in i + 1 .. nums.len() {
+            if nums[i] + nums[j] == target {
+                result.push(i as i32);
+                result.push(j as i32);
+                return result;
+            }
+        }
+    }
+    result
+}
+
+fn main() {
+    let nums: Vec<i32> = vec![2,3,5,7];
+    let target: i32 = 8;
+    println!("{:?}", double_loop_add_sum(nums, target))
+
+}
+```
+
+
+
+下面用powershell寫一般雙loop的方法
+
+```powershell
+function two_sum {
+    param (
+        [int[]]$nums,
+        [int]$target
+    )
+
+    for ($i = 0; $i -lt $nums.Length; $i++) {
+        for ($j = $i + 1; $j -lt $nums.Length; $j++) {
+            if ($nums[$i] + $nums[$j] -eq $target) {
+                return @($i,$j)
+            }
+        }
+    }
+}
+
+#test
+
+$result = two_sum -nums @(2,7,11,15) -target 9
+
+Write-Output $result
+```
+
+這個是雙loop, 時間複雜度O($n^2$), 但很好理解
+
+bash的寫法(同powershell)
+
+```bash
+#!/bin/bash
+
+nums=(2 7 11 15)
+target=9
+
+len=${#nums[@]}
+
+for (( i=0; i<len;i++ )); do
+        for (( j=i+1; j<len; J++ )); do
+                sum=$(( nums[i]+nums[j] ))
+                if [[ $sum -eq $target ]] ; then
+                        echo "$i $j"
+                        exit 0
+                fi
+        done
+done
+```
+
+
+# Palindrome Number
+
+給一個整數, 判斷是否廻文
+
+用數學解法, 讓空間O(1), 直接複製字串等於要提供兩個string的heap空間
+
+```rust
+//2.15MB, 1ms
+pub fn is_palindrome(x: i32) -> bool {
+    
+    //先去掉不可能的情況, 負數, 0結尾, 
+    //0結尾, 但不是0本身, 一定不是palindrome
+    if x < 0 || (x % 10 == 0 && x !=0) {  
+        return false;
+    }
+
+    let mut x = x;
+    let mut reverse_half = 0;   //等等純數字用, 用stack取代string的heap
+
+    while x > reverse_half {
+            reverse_half = reverse_half * 10 + x % 10; //原本的數字進位, 加上x最後一位數
+            x /= 10;                //去掉最後一個位數
+    }
+
+    x == reverse_half || x == reverse_half / 10   //odd digit, 不用管中間是甚麼
+}
+
+fn main() {
+    let x: i32 = 12321;
+    println!("{}",is_palindrome(x));
+
+    let y: i32 = 10000;
+    print!("{}", is_palindrome(y));
+}
+```
+
+rust有trait可以更快, 簡單解這題, zero abstract的代表
+
+```rust
+// 1.9 memories
+fn palindrome(x: i32) -> bool {
+    let y = x.to_string();
+    y.chars().rev().collect::<String>() == y
+}
+
+fn main() {
+    let x = 1234321;
+    println!("{:?}", palindrome(x));
+}
+```
+
+powershell version
+
+```powershell
+function test {
+    param([int]$x)
+
+    if ($s -lt 0 -or ($x -ne 0 -and ($x % 10) -eq 0)) {
+        return false
+    }
+
+    $rev_half = 0
+
+    while ($x -gt $rev_half) {
+        $rev_half = ($rev_half * 10) + ($x % 10)
+        $x = [int]($x / 10)
+    }
+
+    return (($x -eq $rev_half) -or ($x -eq ($rev_half / 10)))
+}
+
+test 12321
+```
+
+bash處理文字比較好, 有rev自帶工具
+
+```bash
+#!/bin/bash
+
+is_palindrome() {
+        local x=$1   #指定位置, $0是程式本身
+
+        local s="$x"
+        local rev_int
+        rev_int=$(echo "$s" | rev)
+
+        if [[ "$s" == "$rev_int" ]]; then
+                echo "true"
+        else
+                echo "false"
+        fi
+}
+
+# main function
+
+if [[ $# -eq 0 ]]; then
+        echo "沒有輸入數字"
+        exit 1
+fi
+
+is_palindrome "$1"
+```
+
+用數學方法
+
+```bash
+#!/bin/bash
+
+compared() {
+        local x=$1
+
+        if (( x<0 )); then
+                echo "false"
+                return
+        fi
+
+        local origin=$x
+        local reverse=0
+
+        while (( x>0 )); do
+                reverse=$(( reverse*10+x%10 ))
+                x=$(( x/10 ))
+        done
+
+        if (( origin==reverse )); then
+                echo "true"
+        else
+                echo "false"
+        fi
+}
+
+compared 12321
+compared 10
+```
