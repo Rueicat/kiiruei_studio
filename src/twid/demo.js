@@ -9,18 +9,11 @@ const outputEl = document.querySelector('#twid-out');    // << twid-out
 
 function show(ok, reason) {
   if (ok) {
-    outputEl.textContent = `${inputEl.value} is VALID`;
+    outputEl.textContent = `${inputEl.value} 合法身份證號碼`;
     outputEl.style.color = "green";
   } else {
-    const map = {
-      "length must be 10": "長度必須 10 碼",
-      "first char must be uppercase A-Z": "第一字元需為大寫英文字母",
-      "invalid region letter": "無效的地區字母",
-      "digits required after the letter": "字母後需為數字",
-      "gender digit must be 1 or 2": "性別碼必須為 1 或 2",
-      "checksum failed": "檢查碼失敗",
-    };
-    outputEl.textContent = `${inputEl.value} is INVALID: ${map[reason] ?? reason}`;
+
+    outputEl.textContent = `${inputEl.value} 不合法: ${reason}`;
     outputEl.style.color = "#b00";
   }
 }
