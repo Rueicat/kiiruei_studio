@@ -7,6 +7,7 @@
     - [個案管理平台](./service/access.md)
 - [雲端服務(private)](./service/nas.md)
 - [記帳服務(private)](./service/budget.md)
+- [台灣身份證驗證](./twid/twid_demo.md)
 - [演算法(algorithms)研究](./algorithms/algo_intro.md)
     - [資料結構](./algorithms/data_struct.md)
 - [心術](./intentions/resolution_md.md)
