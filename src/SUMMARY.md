@@ -10,6 +10,7 @@
 - [台灣身份證驗證](./twid/twid_demo.md)
 - [演算法(algorithms)研究](./algorithms/algo_intro.md)
     - [資料結構](./algorithms/data_struct.md)
+- [TUI框架](./tui_framework/introduce.md)
 - [心術](./intentions/resolution_md.md)
     - [心術](./intentions/intensions.md)
 - [渲染測試](./admonish_example.md)

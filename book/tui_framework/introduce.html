@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>評估簡述工具 - kiiruei_studio</title>
+        <title>TUI框架 - kiiruei_studio</title>
 
 
         <!-- Custom HTML head -->
@@ -239,17 +239,143 @@
 }
 
 </style>
-<p><a href="http://report.kiiruei.studio">evaluation_report</a></p>
+<h1 id="terminal-user-interface框架"><a class="header" href="#terminal-user-interface框架">Terminal User Interface框架</a></h1>
+<p>使用rust的ratatui + crossterm(底層事件處理)</p>
+<h2 id="crosstermevent"><a class="header" href="#crosstermevent">crossterm::event::</a></h2>
+<ol>
+<li>self : 處理終端事件, 螢幕大小變化, 滑鼠鍵盤, 或是event::read()等待事件, 讀取事件</li>
+<li>Event : 事件enum</li>
+<li>KeyCode : 案件代碼</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum KeyCode{
+    Backspace,
+    Enter,
+    Left, Right, Up, Down,
+    Tab, BackTab,
+    Delete, Insert,
+    F(u8)            //F1-F12
+    Char(char),      //一般字元 ,asdferwer
+    Null,
+    Esc,
+}
+<span class="boring">}</span></code></pre></pre>
+<ol start="4">
+<li>KeyEvent : 單次鍵盤事件</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Pub struct KeyEvent {
+    pub code: KeyCode,
+    pub modifiers: keyModifiers,     //有沒有Ctrl, Alt, Shift
+    pub kind : KeyEventKind,         //press,release,repeat
+    pub state : KeyEventState,       //numLock, CapsLock 等狀態
+}
+<span class="boring">}</span></code></pre></pre>
+<ol start="5">
+<li>KeyEventKind : 按鍵種類(上述第4點)</li>
+<li>KeyModifiers : 修飾鍵,組合鍵(第4點)</li>
+</ol>
+<h2 id="ratatui"><a class="header" href="#ratatui">ratatui</a></h2>
+<ul>
+<li>DefaultTerminal :         //init視窗必備</li>
+<li>Frame :                   //畫框必備</li>
+<li>text::Line                //文字</li>
+<li>style::Stylize            //粗體字等變化調整</li>
+<li>widgets::{
+Block,                  //大框框
+Paragraph,              //可以寫多行文章
+}</li>
+</ul>
+<h2 id="最基本的框架元素"><a class="header" href="#最基本的框架元素">最基本的框架元素</a></h2>
+<pre><pre class="playground"><code class="language-rust">use color_eyre::Result;
+use crossterm::{event::{self,Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers}};
+use ratatui::{
+    DefaultTerminal, Frame,
+    style::Stylize,
+    text::Line,
+    widgets::{Block, Paragraph},  
+};
+
+fn main() -&gt; color_eyre::Result&lt;()&gt; {               //可接受任何類型的Error
+    color_eyre::install()?;                         //啟動彩色錯誤處理
+    let terminal = ratatui::init();
+    let result = App::new().run(terminal);
+    ratatui::restore();
+    result
+}
+
+#[derive(Debug,Default)]
+pub struct App {                    //程式進入和結束的邏輯 1,0
+    running: bool,
+}
+
+impl App {
+    pub fn new() -&gt; Self {          //初始化
+        Self::default()
+    }
+
+    pub fn run(mut self, mut terminal: DefaultTerminal) -&gt; Result&lt;()&gt; {                 //loop邏輯
+        self.running = true;
+        while self.running {                                //如果初始化失敗, 回傳問題
+            terminal.draw(|frame| self.render(frame))?;
+            self.handle_crossterm_events()?;
+        }
+        Ok(())
+    }
+    
+
+    fn render(&amp;mut self, frame: &amp;mut Frame) {                  //不用pub, 畫布變化
+        let title = Line::from("我的第一個tui程式")
+            .bold()
+            .blue()
+            .centered();
+        let text = "第一行文字測試\n\n\
+                    換兩行到第三行\n\
+                    然後跟你說Esc, Ctrl-c, q 都可以關閉程式\
+                    ";
+        frame.render_widget(
+            Paragraph::new(text)
+                .block(Block::bordered().title(title))
+                .centered(), 
+            frame.area(),
+        )
+    }
+
+    fn handle_crossterm_events(&amp;mut self) -&gt; Result&lt;()&gt; {     //key事件處理
+        match event::read()? {
+            Event::Key(key) if key.kind == KeyEventKind::Press =&gt; self.on_key_event(key),
+            Event::Mouse(_) =&gt; {}
+            Event::Resize(_,_) =&gt; {}
+            _ =&gt; {}
+        }
+        Ok(())
+    }
+
+    fn on_key_event(&amp;mut self, key: KeyEvent) {                //key事件接收
+        match (key.modifiers, key.code) {
+            (_, KeyCode::Esc | KeyCode::Char('q'))
+            | (KeyModifiers::CONTROL, KeyCode::Char('c') | KeyCode::Char('C')) =&gt; self.quit(),
+
+            _ =&gt; {}
+        }
+    }
+
+    fn quit(&amp;mut self) {
+        self.running = false;
+    }                        //離開的邏輯
+}</code></pre></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../longcare_projects/cms_intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../algorithms/data_struct.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../service/access.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../intentions/resolution_md.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -259,11 +385,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../longcare_projects/cms_intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../algorithms/data_struct.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../service/access.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../intentions/resolution_md.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
