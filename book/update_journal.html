@@ -200,6 +200,13 @@
 <a class="admonition-anchor-link" href="#admonition-更新日記"></a>
 </div>
 <div>
+<h3 id="20260407"><a class="header" href="#20260407">2026.04.07</a></h3>
+<ul>
+<li>這段時間換工作, 忙碌, 重新開始更新內容</li>
+<li>增加Clang頁籤</li>
+<li>照專項目關閉</li>
+</ul>
+<hr />
 <h3 id="20250911"><a class="header" href="#20250911">2025.09.11</a></h3>
 <ul>
 <li>用wasm的方法, 做一個台灣身份證驗證的頁面</li>
@@ -272,22 +279,6 @@
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
