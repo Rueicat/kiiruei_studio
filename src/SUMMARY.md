@@ -14,3 +14,11 @@
 - [心術](./intentions/resolution_md.md)
     - [心術](./intentions/intensions.md)
 - [渲染測試](./admonish_example.md)
+- [Clang]()
+    - [C-array](./Clang/C-array.md)
+    - [C-IO](./Clang/C-IO.md)
+    - [C-Loop](./Clang/C-Loop.md)
+    - [C-point](./Clang/C-point.md)
+    - [C-select](./Clang/C-select.md)
+    - [C-type](./Clang/C-type.md)
+
