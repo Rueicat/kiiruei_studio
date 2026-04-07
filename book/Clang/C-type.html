@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>照專行政解決方案 - kiiruei_studio</title>
+        <title>C-type - kiiruei_studio</title>
 
 
         <!-- Custom HTML head -->
@@ -180,19 +180,202 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="照專行政解決方案"><a class="header" href="#照專行政解決方案">照專行政解決方案</a></h1>
+                        <p>ASCII
+typdef
+sizeof
+&lt;ctype.h&gt;</p>
+<h2 id="用ascii轉換大小寫字母"><a class="header" href="#用ascii轉換大小寫字母">用ASCII轉換大小寫字母</a></h2>
+<pre><code class="language-C">/*Capital and lowercase traslate(use ASCII)*/
+
+#include &lt;stdio.h&gt;
+
+int main(void){
+
+    char ch;
+    int i;
+
+    printf("Enter a lowercase: ");
+    scanf("%c", &amp;ch);
+
+    if ('a' &lt;= ch &amp;&amp; ch &lt;= 'z')     // ASCII 97~122
+        ch = ch - 'a' + 'A';         //offset
+    else
+     printf("Error: Plase enter a-z lowercase.");
+
+    printf("Capital is:%c ", ch);
+                    
+    
+
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="讀字串長度"><a class="header" href="#讀字串長度">讀字串長度</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    char ch;
+    int len = 0;
+
+    printf("Enter a message: ");
+    scanf("%c", &amp;ch);
+    while ( ch != '\n' ){
+        len++;
+        printf("%c\n", ch);
+        ch = getchar();
+    }  
+    printf("Your message was %d character(s) long\n", len);
+
+    return 0;
+}
+</code></pre>
+<h2 id="運算平方-可暫停"><a class="header" href="#運算平方-可暫停">運算平方, 可暫停</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    
+    int i, n;
+    char c = '\n';
+    
+    printf("This program prints a table of squares.\n");
+    printf("Enter number of entries in table: ");    
+    scanf("%d", &amp;n);
+
+    while ( getchar() != '\n' ) ;         //clear the  buffer
+
+    for ( i = 1; i &lt;= n; i++ ){
+        while ( i % 24 == 0 ) {
+            printf("Press Enter to continue...");
+            scanf("%c", &amp;c);
+            break;
+        }
+        printf("%10d%10d\n", i, i * i);
+    }
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="電腦號碼字母轉換"><a class="header" href="#電腦號碼字母轉換">電腦號碼字母轉換</a></h2>
+<pre><code class="language-C">#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void){
+
+    int ch;
+
+    printf("Enter phone number:");
+
+    //main logic
+    while ((ch = getchar()) != '\n') {
+        ch = toupper(ch);
+
+        if ('A' &lt;= ch &amp;&amp; ch &lt;= 'C') putchar('2');
+        else if ('D' &lt;= ch &amp;&amp; ch &lt;= 'F') putchar('3');
+        else if ('G' &lt;= ch &amp;&amp; ch &lt;= 'I') putchar('4');
+        else if ('J' &lt;= ch &amp;&amp; ch &lt;= 'L') putchar('5');
+        else if ('M' &lt;= ch &amp;&amp; ch &lt;= 'O') putchar('6');
+        else if ('P' &lt;= ch &amp;&amp; ch &lt;= 'S') putchar('7');
+        else if ('T' &lt;= ch &amp;&amp; ch &lt;= 'V') putchar('8');
+        else if ('W' &lt;= ch &amp;&amp; ch &lt;= 'Z') putchar('9');
+        else putchar(ch);
+    }
+    putchar('\n');
+    
+
+    return 0;
+}
+</code></pre>
+<h2 id="電腦號碼字母轉換-不用putchar-getchar"><a class="header" href="#電腦號碼字母轉換-不用putchar-getchar">電腦號碼字母轉換-不用putchar, getchar</a></h2>
+<pre><code class="language-C">#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void){
+    char str[10];
+
+    printf("Enter phone number: ");
+    scanf("%11s", str);
+
+    //main logic
+    for ( int i = 0; str[i] != '\0'; i++ ){
+        char c = toupper(str[i]);
+        if ( 'A' &lt;= c &amp;&amp; c &lt;= 'C' ) str[i] = '2';
+        else if ( 'D' &lt;= c &amp;&amp; c &lt;= 'F' ) str[i] = '3';
+        else if ( 'G' &lt;= c &amp;&amp; c &lt;= 'I' ) str[i] = '4';
+        else if ( 'J' &lt;= c &amp;&amp; c &lt;= 'L' ) str[i] = '5';
+        else if ( 'M' &lt;= c &amp;&amp; c &lt;= 'O' ) str[i] = '6';
+        else if ( 'P' &lt;= c &amp;&amp; c &lt;= 'S' ) str[i] = '7';
+        else if ( 'T' &lt;= c &amp;&amp; c &lt;= 'V' ) str[i] = '8';
+        else if ( 'W' &lt;= c &amp;&amp; c &lt;= 'Z' ) str[i] = '9';
+        // default, keep original ch
+    }  
+    printf("%s\n", str);
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="字母加權分數計算"><a class="header" href="#字母加權分數計算">字母加權分數計算</a></h2>
+<pre><code class="language-C">
+#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void){
+
+    int value[26] = {
+        1, 3, 3, 2, 1, 4, 2,        //A-G
+        4, 1, 8, 5, 1, 3, 1,        //H-N
+        1, 3, 10, 1, 1, 1, 1,       //O-U
+        4, 4, 8, 4, 10
+    };
+
+    char str[26];
+    int sum = 0;
+
+    printf("Enter a word: ");
+    scanf("%25s", str);
+    
+    for ( int i = 0; str[i] != '\0'; i++ ){
+        char c = toupper(str[i]);
+
+        if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z'){
+            sum += value[ c - 'A' ];
+        }
+    }
+    printf("Scrabble value: %d", sum);
+    
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="各個各式的佔用大小最小占用大小"><a class="header" href="#各個各式的佔用大小最小占用大小">各個各式的佔用大小(最小占用大小)</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main (void){
+
+    printf("int: %zu\n", sizeof(int));
+    printf("short: %zu\n", sizeof(short));
+    printf("long: %zu\n", sizeof(long));
+    printf("float: %zu\n", sizeof(float));
+    printf("double: %zu\n", sizeof(double));
+    printf("long double: %zu\n", sizeof(long double));
+
+    return 0;
+}
+
+</code></pre>
+<p>[[Clang]]</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../長照2_0服務項目/1照顧服務.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../Clang/C-select.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../service/report.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -200,13 +383,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../長照2_0服務項目/1照顧服務.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../Clang/C-select.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../service/report.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

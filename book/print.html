@@ -39,6 +39,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
@@ -95,10 +96,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -152,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -172,85 +181,14 @@
 
                 <div id="content" class="content">
                     <main>
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="development-diary"><a class="header" href="#development-diary">Development Diary</a></h1>
-<div class="mdbook-alerts mdbook-alerts-tip">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  tip
-</p>
+                        <h1 id="development-diary"><a class="header" href="#development-diary">Development Diary</a></h1>
+<blockquote>
+<p>[!TIP]</p>
 <ul>
 <li>如有任何問題, 請寫信至<span style='color: brown;'>support@kiiruei.studio</span>, 將儘快回覆您的問題</li>
 <li>目前不支援中文字的搜尋功能</li>
 </ul>
-</div>
+</blockquote>
 <ul>
 <li>performance is design</li>
 <li>期待用最小的資源, 完成各種解決方案</li>
@@ -311,75 +249,7 @@
 <hr />
 </div>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="長照20服務項目"><a class="header" href="#長照20服務項目">長照2.0服務項目</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="長照20服務項目"><a class="header" href="#長照20服務項目">長照2.0服務項目</a></h1>
 <img src="./pic/長照2_0服務項目/2_0服務總表.png" width="600">
 <ul>
 <li>
@@ -474,75 +344,7 @@
 <blockquote>
 <p>同日AA08及AA09不能同時申請</p>
 </blockquote>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="照顧服務"><a class="header" href="#照顧服務">照顧服務</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="照顧服務"><a class="header" href="#照顧服務">照顧服務</a></h1>
 <p>主管機關為台北市社會局老人福利科, <code>BD01-BD03</code>是給日照中心及家托單位之補助; <code>BD03</code>是補助接送個案居家到其他長照服務據點(含輔具中心)</p>
 <p>照顧服務含:</p>
 <ul>
@@ -677,423 +479,15 @@
 <p>本項服務由民眾<span style="color: red;">全額自費</span>，各試辦單位得提供<span style="color: red;">單次至少四小時以上</span>或全日等彈性服務，並依勞動部核定之服務價格收費。</p>
 <p><a name="BB"></a></p>
 <h2 id="日間照顧bb"><a class="header" href="#日間照顧bb">日間照顧BB</a></h2>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="照專行政解決方案"><a class="header" href="#照專行政解決方案">照專行政解決方案</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<p><a href="http://report.kiiruei.studio">evaluation_report</a></p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="線上資料庫平台"><a class="header" href="#線上資料庫平台">線上資料庫平台</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="照專行政解決方案"><a class="header" href="#照專行政解決方案">照專行政解決方案</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><p><a href="http://report.kiiruei.studio">evaluation_report</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="線上資料庫平台"><a class="header" href="#線上資料庫平台">線上資料庫平台</a></h1>
 <p><a href="https://access.kiiruei.studio">access_on_web</a></p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="雲端服務"><a class="header" href="#雲端服務">雲端服務</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="雲端服務"><a class="header" href="#雲端服務">雲端服務</a></h1>
 <p><a href="http://nas.kiiruei.studio">My_nas</a></p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="記帳服務"><a class="header" href="#記帳服務">記帳服務</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="記帳服務"><a class="header" href="#記帳服務">記帳服務</a></h1>
 <p><a href="http://budget.kiiruei.studio">My_budget</a></p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="台灣身份證驗證"><a class="header" href="#台灣身份證驗證">台灣身份證驗證</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="台灣身份證驗證"><a class="header" href="#台灣身份證驗證">台灣身份證驗證</a></h1>
 <ul>
 <li>
 <p>使用rust, cargo add wasm-bindgen</p>
@@ -1109,75 +503,7 @@
 <button id="twid-btn">Check</button>
 <p id="twid-out"></p>
 <script type="module" src="./demo.js"></script>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="演算法algorithms研究"><a class="header" href="#演算法algorithms研究">演算法(algorithms)研究</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="演算法algorithms研究"><a class="header" href="#演算法algorithms研究">演算法(algorithms)研究</a></h1>
 <p>performance is design</p>
 <p>演算法個人認為, 是一種學習如何"設計最有效率決策"的技術, 可以在使用AI做出大部分架構與解決方案後, 再次做優化與改善. 是綜合能力, 也是思維底層核心重要的價值之一.</p>
 <p>準備一個自己比較熟悉的程式語言, 開始探討演算法...</p>
@@ -1190,7 +516,7 @@
 <p>下面嘗試練習幾個範例看自己受不受的了...</p>
 <h2 id="插入排序"><a class="header" href="#插入排序">插入排序</a></h2>
 <p><strong>輸入</strong> -&gt; n個數字</p>
-<p><strong>輸出</strong> -&gt; 重新排序<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord">...</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
+<p><strong>輸出</strong> -&gt; 重新排序$a_1 \leq a_2 \leq a_3 \leq ... \leq a_n$</p>
 <p>使用bubble sort</p>
 <p>物件導向語言練習(powershell)</p>
 <pre><code class="language-powershell">cls
@@ -1452,75 +778,7 @@ mod tests {
     }
 }
 </code></pre></pre>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="資料結構"><a class="header" href="#資料結構">資料結構</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="資料結構"><a class="header" href="#資料結構">資料結構</a></h1>
 <p>單純先研究基礎的資料結構, 要先了解以下定義:</p>
 <ol>
 <li>
@@ -1933,7 +1191,7 @@ $result = two_sum -nums @(2,7,11,15) -target 9
 
 Write-Output $result
 </code></pre>
-<p>這個是雙loop, 時間複雜度O(<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>), 但很好理解</p>
+<p>這個是雙loop, 時間複雜度O($n^2$), 但很好理解</p>
 <p>bash的寫法(同powershell)</p>
 <pre><code class="language-bash">#!/bin/bash
 
@@ -2068,75 +1326,7 @@ compared() {
 compared 12321
 compared 10
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="terminal-user-interface框架"><a class="header" href="#terminal-user-interface框架">Terminal User Interface框架</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="terminal-user-interface框架"><a class="header" href="#terminal-user-interface框架">Terminal User Interface框架</a></h1>
 <p>使用rust的ratatui + crossterm(底層事件處理)</p>
 <h2 id="crosstermevent"><a class="header" href="#crosstermevent">crossterm::event::</a></h2>
 <ol>
@@ -2263,144 +1453,8 @@ impl App {
         self.running = false;
     }                        //離開的邏輯
 }</code></pre></pre>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="心術"><a class="header" href="#心術">心術</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<h1 id="心術-1"><a class="header" href="#心術-1">心術</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="心術"><a class="header" href="#心術">心術</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="心術-1"><a class="header" href="#心術-1">心術</a></h1>
 <p>作者:蘇洵(西元1009-1066年)</p>
 <p>北宋世代的人, 27歲發憤向學, 但應進士不中, 於是閉門苦讀十年. 後來帶著兩個兒子--蘇軾和蘇轍,去拜會當代文壇大老歐陽修, 自己的作品有受到賞識, 經歐陽修推薦, 一時學者競效其文.</p>
 <p>有名的是兩個兒子後來同登金榜, 轟動京師. 但這時老婆程氏卻病故. 嘉佑三年(1058年), 宋仁宗召他參加考試, 但他稱病不赴.(此時他48歲左右)</p>
@@ -2416,89 +1470,14 @@ impl App {
 <p>  兵有長短，敵我一也。敢問：“吾之所長，吾出而用之，彼將不與吾校；吾之所短，吾蔽而置之，彼將強與吾角，奈何？”曰：“吾之所短，吾抗而暴之，使之疑而卻；吾之所長，吾陰而養之，使之狎而墮其中。此用長短之術也。”</p>
 <p>  善用兵者，使之無所顧，有所恃。無所顧，則知死之不足惜；有所恃，則知不至於必敗。尺箠當猛虎，奮呼而操擊；徒手遇蜥蜴，變色而卻步，人之情也。知此者，可以將矣。袒裼而案劍，則烏獲不敢逼；冠冑衣甲，據兵而寢，則童子彎弓殺之矣。故善用兵者以形固。夫能以形固，則力有餘矣。</p>
 <hr />
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>這篇有用到空白的HTML標記語言中, 跳脫序列的表示法
+<blockquote>
+<p>[!NOTE]
+這篇有用到空白的HTML標記語言中, 跳脫序列的表示法
 <code>&amp;emsp;</code> Em space</p>
-<blockquote>
-</blockquote>
 <p><code>&amp;ensp;</code> En space</p>
-<blockquote>
-</blockquote>
 <p><code>&amp;nbsp;</code> Non-break space</p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
-<div id="admonition-info" class="admonition admonish-info" role="note" aria-labelledby="admonition-info-title">
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><div id="admonition-info" class="admonition admonish-info" role="note" aria-labelledby="admonition-info-title">
 <div class="admonition-title">
 <div id="admonition-info-title">
 <p>Info</p>
@@ -2619,41 +1598,891 @@ impl App {
 <p>admonish note title="YOUR_TITLE"</p>
 </div>
 </div>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>Highlights information that users should take into account, even when skimming.</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-tip">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  tip
-</p>
-<p>Optional information to help a user be more successful.</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-important">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  important
-</p>
-<p>Crucial information necessary for users to succeed.</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>Critical content demanding immediate user attention due to potential risks.</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-caution">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  caution
-</p>
-<p>Negative potential consequences of an action.</p>
-</div>
+<blockquote>
+<p>[!NOTE]<br />
+Highlights information that users should take into account, even when skimming.</p>
+</blockquote>
+<blockquote>
+<p>[!TIP]
+Optional information to help a user be more successful.</p>
+</blockquote>
+<blockquote>
+<p>[!IMPORTANT]<br />
+Crucial information necessary for users to succeed.</p>
+</blockquote>
+<blockquote>
+<p>[!WARNING]<br />
+Critical content demanding immediate user attention due to potential risks.</p>
+</blockquote>
+<blockquote>
+<p>[!CAUTION]
+Negative potential consequences of an action.</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="reverse-sort"><a class="header" href="#reverse-sort">reverse sort</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#define N 10       // for array index
+int main(void){
+
+    int str[N];
+
+    printf("Enter 10 numbers: ");
+
+    for( int i = 0; i &lt; N; i++ ){
+    scanf("%d", &amp;str[i]);
+    }
+
+    //main logic
+    for (int i = N - 1; i &gt;= 0; i--){
+        printf("%d ", str[i]);
+    }
+    return 0;
+}
+
+</code></pre>
+<p>[[Clang]]</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="printf"><a class="header" href="#printf">printf</a></h1>
+<ul>
+<li>格式組成</li>
+<li>轉換方法</li>
+<li>特殊的轉譯</li>
+</ul>
+<h1 id="scanf"><a class="header" href="#scanf">scanf</a></h1>
+<ul>
+<li>格式組成</li>
+<li>轉換方法</li>
+<li>&amp;意義 (pointer)</li>
+<li>其他character</li>
+</ul>
+<hr />
+<p>[[Clang]]</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="c可以用的工具"><a class="header" href="#c可以用的工具">C可以用的工具</a></h2>
+<p>while
+do .. while
+for (流程的過程)
+break (跳出此loop) / continue (下一個iterate. 重新檢查條件, 跳過本次iterate)
+goto (少用了)</p>
+<h2 id="判斷是否為質數-on"><a class="header" href="#判斷是否為質數-on">判斷是否為質數-O(n)</a></h2>
+<pre><code class="language-C">// 質數判斷
+/*輸入一個數字
+ * 另一個數字從2起跳跑到輸入的數字-1
+ * 分別%, 只要有除盡(非質數), 就break
+ * */
+
+#include &lt;stdio.h&gt;
+
+int main(void){
+    
+    int user_input;
+    printf("Please enter a non_negative integer:\n");
+    scanf("%d",&amp;user_input);
+    for (int i = 2; i &lt; user_input; i++) {
+        if ( user_input % i == 0 ){
+            printf("%d is not prime integer.\n",user_input);
+            break;
+        }
+    printf("%d is prime number.\n", user_input);
+    break;
+    }
+}
+</code></pre>
+<h2 id="判斷是否為質數-osqrtn"><a class="header" href="#判斷是否為質數-osqrtn">判斷是否為質數-O($\sqrt{n}$)</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    
+    int user_input;
+    printf("Please enter a non_negative integer:\n");
+    scanf("%d",&amp;user_input);
+ 
+    if (user_input &lt; 2 ){
+        printf("%d is not prime number", user_input);
+        return 0;
+    }   
+    
+    for (int i = 2; i * i &lt;= user_input; i++) {
+        if (user_input % i == 0){
+            printf("%d is not prime number!", user_input);
+            return 0;;
+        }
+    printf("The %d is prime number!", user_input);
+    return 0;
+    }
+}
+</code></pre>
+<h2 id="判斷是否為質數狀態設定-sqrtn"><a class="header" href="#判斷是否為質數狀態設定-sqrtn">判斷是否為質數(狀態設定)-$\sqrt{n}$</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    
+    int user_input;
+    int is_prime = 1;    // 狀態表示
+    printf("Please enter a non_negative integer:\n");
+    scanf("%d",&amp;user_input);
+    
+    for (int i = 2; i * i &lt;= user_input; i++){
+        if ( user_input % i == 0 ) {
+            is_prime = 0;
+            break;
+        }
+    }
+
+    printf("The %d is %s a prime number",user_input, is_prime ? "":"NOT");
+ /*   
+    if (is_prime){
+        printf("The %d is a prime number", user_input);
+    } else {
+        printf("The %d is not a prime number", user_input);
+    }
+
+ */
+    return 0;
+}
+</code></pre>
+<h2 id="基本數數counting"><a class="header" href="#基本數數counting">基本數數counting</a></h2>
+<pre><code class="language-C">// 基本的數數counting
+
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int number = 0;
+    int user_input;
+    printf("Please Enter a number:");
+    scanf("%d",&amp;user_input);
+
+    for ( ;number &lt;= user_input;number ++ ) {
+        printf("%d | ",number);
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="退出loop"><a class="header" href="#退出loop">退出loop</a></h2>
+<pre><code class="language-C">// 退出邏輯, 輸入指定char才退出
+// 我記得gui介面都這樣使用(保持介面, 等使用者輸入邏輯才往下一步走)
+
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    char c;
+    while (1) {
+        printf("Please enter q to quit:\n");
+        scanf(" %c",&amp;c);                     //空一個忽略上一個stream的 \n
+        if ( c == 'q') {
+            printf("Bye bye!\n");
+            break;
+        }
+        printf("You entered: %c\n", c);
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="算錢"><a class="header" href="#算錢">算錢</a></h2>
+<pre><code class="language-C">/*count function*/
+
+#include &lt;stdio.h&gt;
+
+int main(void){
+    int cmd;   // user_input
+    float balance = 0.0f, credit, debit;
+
+    printf("***Checkbook-balacing program***\n");
+    printf("Commands: 0=clear, 1=credit, 2=debit, 3=balance, 4=exit\n\n");
+    while (1){
+        printf("Enter command: ");
+        scanf("%d",&amp;cmd);
+        switch (cmd) {
+            case 0:
+                balance = 0.0f;
+                break;
+            case 1:
+                printf("Enter amount of credit: ");
+                scanf("%f",&amp;credit);
+                balance += credit;
+                break;
+            case 2:
+                printf("Enter amount of debit: ");
+                scanf("%f",&amp;debit);
+                balance -= debit;
+                break;
+            case 3:
+                printf("Current balance: $%.2f\n",balance);
+                break;
+            case 4:
+                return 0;
+            default:
+                printf("Commands: 0=clear, 1=credit, 2=debit, 3=balance, 4=exit\n\n");
+                break;
+        }
+    }
+}
+</code></pre>
+<h2 id="基礎計算機"><a class="header" href="#基礎計算機">基礎計算機</a></h2>
+<pre><code class="language-C">/*calculator*/
+
+#include &lt;stdio.h&gt;
+
+int main(void){
+    int cmd;
+    float result = 0.00f, num;
+
+    printf("Calculator\n");
+    printf("Command: 0=clear, 1=plus, 2=minus, 3=times, 4=division, 5=exit\n\n");
+    while (1){
+        printf("Enter command: ");
+        scanf("%d",&amp;cmd);
+        switch (cmd) {
+            case 0:
+                result = 0.00f;
+                break;
+            case 1:
+                printf("Enter plus number: ");
+                scanf("%f",&amp;num);
+                result += num;
+                printf("sum: %.2f\n", result);
+                break;
+            case 2:
+                printf("Enter minus number: ");
+                scanf("%f",&amp;num);
+                result -= num;
+                printf("sum: %.2f\n", result);
+                break;
+            case 3:
+                printf("Enter times number: ");
+                scanf("%f",&amp;num);
+                result *= num;
+                printf("sum: %.2f\n", result);
+                break;
+            case 4:                                 //divided by zero
+                printf("Enter divided number: ");
+                scanf("%f",&amp;num);
+                if (num == 0.0f){
+                    printf("Error: division by zero\n");
+                    break;
+                }
+                result /= num;
+                printf("sum: %.2f\n", result);
+                break;
+            case 5:
+                printf("Bye Bye");
+                return 0;
+            default:
+                printf("Please Enter the correct command: ");
+                break;
+        }
+    
+    }
+}
+</code></pre>
+<h2 id="for-and-while-互換邏輯"><a class="header" href="#for-and-while-互換邏輯">for and while 互換邏輯</a></h2>
+<pre><code class="language-C">for (A; B; C) { Body}
+
+//equivalent to
+
+A;
+while (B)
+	Body;
+	C;
+</code></pre>
+<h2 id="2的7次方"><a class="header" href="#2的7次方">2的7次方</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(){
+    int i = 1, n = 0;
+
+    while (i &lt;=128) {
+        printf("%d, power is: %d\n", i, n);
+        i *= 2;
+        n += 1;
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="2的7次方改成用for"><a class="header" href="#2的7次方改成用for">2的7次方(改成用for)</a></h2>
+<pre><code class="language-C">// 改寫成for
+
+#include &lt;stdio.h&gt;
+
+int main() {
+   for (int i =1, n =0; i &lt; 128 ; i *= 2, n++) {   //要賦值
+        printf("%d, power is: %d\n", i, n);
+   }
+   return 0;
+}
+
+</code></pre>
+<h2 id="最大公因數"><a class="header" href="#最大公因數">最大公因數</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int m, n, r;
+
+    printf("Enter two integers: ");
+    scanf("%d %d", &amp;m, &amp;n);
+
+    while (n != 0) {
+        r = m % n;
+        m = n;
+        n = r;
+    }
+
+    printf("GCD: %d\n", m);
+
+    return 0;
+}
+</code></pre>
+<h2 id="最大公因數-求最簡分數"><a class="header" href="#最大公因數-求最簡分數">最大公因數-求最簡分數</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int m, n, r, fraction_up, fraction_down ;
+    printf("Enter a fraction(ex: 10/18): ");
+    scanf("%d/%d", &amp;fraction_up, &amp;fraction_down);
+
+    if (fraction_down == 0){
+        printf("Error: denominator cannot be zero\n");
+        return 1;
+    }
+
+    m = fraction_up;
+    n = fraction_down;
+
+    while ( n != 0){
+        r = m % n;
+        m = n;
+        n = r;
+    }
+    printf("In lowest terms: %d/%d\n", fraction_up / m, fraction_down / m  );
+
+    return 0;
+}
+</code></pre>
+<h2 id="program-"><a class="header" href="#program-">program-</a></h2>
+<p>找出用戶輸入的最大數, 需要一個一個讓客戶輸入, 當輸入0或負數, 顯示出已經輸入的最大非負數</p>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    float user_input, max;
+    
+    printf("Enter a number: ");
+    scanf("%f", &amp;user_input);
+
+    max = user_input;
+
+    while ( user_input &gt; 0 ){
+
+        if ( user_input &gt; max ){
+            max = user_input;
+        }
+
+        printf("Enter a number: ");
+        scanf("%f", &amp;user_input);
+
+
+    }
+    printf("The largest number entered was %g\n", max);   //general 
+
+    return 0;
+}
+</code></pre>
+<h2 id="簡單的月曆"><a class="header" href="#簡單的月曆">簡單的月曆</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int month, st_week;
+    
+    
+    printf("Enter number of days in month: ");
+    scanf("%d", &amp;month);
+    printf("Enter starting day of the week(1=sun, 7=Sat): ");
+    scanf("%d", &amp;st_week);
+    
+    // main
+    printf(" Sun Mon Tue Wed Thu Fri Sat\n");
+    for (int i = 1; i &lt; st_week; i++) printf("    ");   //tab是不固定的對齊
+    for ( int i = 1; i &lt;= month; i++ ) {
+        printf("%4d", i);
+        if ( (i + st_week -1) % 7 == 0 ) printf("\n");   //offset
+    
+    }
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="計算e的近似值"><a class="header" href="#計算e的近似值">計算e的近似值</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int n;
+    float sum = 1, result = 1;
+    printf("Enter a integer: ");
+    scanf("%d", &amp;n);
+
+    for ( int i = 1; i &lt;=n; i++ ){ 
+        sum *= i;
+        result += 1 / sum;
+    }
+    printf("limited e is : %f", result);
+
+    return 0;
+}
+
+</code></pre>
+<hr />
+<p>[[Clang]]</p>
+<div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><p>if
+switch</p>
+<h2 id="佣金計算"><a class="header" href="#佣金計算">佣金計算</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int input;
+    float commission;
+
+    printf("Enter value of trade: ");
+    scanf("%d", &amp;input);
+
+    if ( input &lt; 2500 ){
+        commission = 30 + input * 0.017;
+    }else if ( 2500 &lt; input &amp;&amp; input &lt; 6250 ) {
+        commission = 56 + input * 0.0066;
+    }else if ( 6250 &lt; input &amp;&amp; input &lt; 20000 ) {
+        commission = 76 + input * 0.0034;
+    }else if ( 20000 &lt; input &amp;&amp; input &lt; 50000 ) {
+        commission = 100 + input * 0.0022;
+    }else if ( 50000 &lt; input &amp;&amp; input &lt; 5000000 ) {
+        commission = 155 + input * 0.0011;
+    }else if ( 5000000 &lt; input ) {
+        commission = 255 + input * 0.0009;
+    }
+    
+    
+
+    printf("Commission: %.2f", commission);
+
+    return 0;
+}
+</code></pre>
+<h2 id="日期格式轉換"><a class="header" href="#日期格式轉換">日期格式轉換</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int m, d, y;
+    char *month, *day;
+    printf("Enter date (mm/dd/yy): ");
+    scanf("%d/%d/%d",&amp;m, &amp;d, &amp;y);
+
+    // days
+    switch (d) {
+        case 1: day = "st"; break;
+        case 2: day = "nd"; break;
+        case 3: day = "rd"; break;
+        default: day = "th"; break;
+    }
+
+    // month
+    switch ( m ){
+        case 1: month = "Jan"; break;
+        case 2: month = "Feb"; break;
+        case 3: month = "Mar"; break;
+        case 4: month = "Apr"; break;
+        case 5: month = "May"; break;
+        case 6: month = "Jun"; break;
+        case 7: month = "Jul"; break;
+        case 8: month = "Aug"; break;
+        case 9: month = "Sep"; break;
+        case 10: month = "Oct"; break;
+        case 11: month = "Nov"; break;
+        case 12: month = "Dec"; break;
+        default: 
+             printf("Error: please enter 1-12 number."); 
+             return 1;
+    }
+
+    printf("Dated this %d%s day of %s, %d\n",d , day, month, y);
+
+    return 0;
+}
+</code></pre>
+<h2 id="比數字大小"><a class="header" href="#比數字大小">比數字大小</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int i;
+    int j = 5;
+
+    printf("Please Enter a integer: ");
+    scanf("%d", &amp;i);
+
+    switch ((i &gt; j) - (i &lt; j)) {
+        case 1: printf("+1"); break;
+        case 0: printf("0"); break;
+        case -1: printf("-1"); break;
+        default: printf("Error");
+    }
+
+    return 0;
+}
+</code></pre>
+<h2 id="郵遞區號"><a class="header" href="#郵遞區號">郵遞區號</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int area_code;
+
+    printf("Enter the area_code: ");
+    scanf("%d", &amp;area_code);
+
+    switch (area_code) {
+        case 229: 
+            printf("Albany"); 
+            break;
+        case 404: case 470: case 678: case 770:
+            printf("Atlanta");
+            break;
+        case 478:
+            printf("Macon");
+            break;
+        case 706: case 762:
+            printf("Columbus");
+            break;
+        case 912:
+            printf("Savannah");
+            break;
+        default:
+            printf("Not exit area_code in list");
+            return 1;
+    }
+
+    return 0;
+}
+</code></pre>
+<h2 id="算數字的位數"><a class="header" href="#算數字的位數">算數字的位數</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int n;
+    int digits = 0;
+
+    printf("Enter a number: ");
+    scanf("%d", &amp;n);
+
+    int origin = n;
+
+    do {
+        n /= 10;
+        digits++;
+    }while ( n != 0 );
+
+    printf("The number %d has %d digits\n", origin, digits);
+
+    return 0;
+}
+</code></pre>
+<h2 id="時間格式轉換"><a class="header" href="#時間格式轉換">時間格式轉換</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int hour, min;
+    char *time = "AM";
+    char *afternoon = "PM";
+
+    printf("Enter a 24-hour time: ");
+    scanf("%d:%d", &amp;hour, &amp;min);
+
+    if ( hour &gt;= 13 ){
+        hour -= 12;
+        printf("Equivalent 12-hour time: %d:%d %s", hour, min, afternoon);
+    }else if ( hour == 12 ) {
+        printf("Equivalent 12-hour time: %02d:%d %s", hour, min, afternoon);
+    }else {
+        printf("Equivalent 12-hour time: %02d:%d %s", hour, min, time);
+    }
+
+    return 0;
+}
+</code></pre>
+<h2 id="風速表"><a class="header" href="#風速表">風速表</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int speed;
+
+    printf("Enter the speed of the wind: ");
+    scanf("%d", &amp;speed);
+
+    if (speed &lt; 1) {
+        printf("Calm");
+    } else if (1&lt;= speed &amp;&amp; speed &lt;= 3) {
+        printf("Light air");
+    } else if (4 &lt;= speed &amp;&amp; speed &lt;= 27) {
+        printf("Breeze");
+    } else if (28 &lt;= speed &amp;&amp; speed &lt;= 47) {
+        printf("Breeze");
+    } else if (48 &lt;= speed &amp;&amp; speed &lt;= 63) {
+        printf("Storm");
+    } else if ( speed &gt; 63 ) {
+        printf("Hurricane");
+    }
+
+    return 0;
+}
+</code></pre>
+<h2 id="比大小-4個數字"><a class="header" href="#比大小-4個數字">比大小-4個數字</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    int a,b ,c ,d;
+    int max1, min1, max2, min2, max, min;
+
+    printf("Enter four integers: ");
+    scanf("%d %d %d %d",&amp;a ,&amp;b ,&amp;c ,&amp;d);
+
+    if (a &gt; b) {max1 = a; min1 = b;}
+    else       {max1 = b; min1 = a;}
+
+    if (c &gt; d) {max2 = c; min2 = d;}
+    else       {max2 = d; min2 = c;}
+
+    // 晉級比較
+    if (max1 &gt; max2) max = max1;
+    else             max = max2;
+
+    if (min1 &lt; min2) min = min1;
+    else             min = min2;
+    
+    printf("Max = %d\nMin = %d\n", max, min);
+
+
+    return 0;
+}
+</code></pre>
+<h2 id="計算成績grade"><a class="header" href="#計算成績grade">計算成績grade</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    
+    int n;
+    int head;
+
+    do {
+    printf("Enter numerical grade: ");
+    scanf("%d",&amp;n);
+
+        if ( n &gt; 100 || n &lt; 0){
+            printf("Error: Invalid Input\n");
+            printf("Error: Please try again, enter 1-100 integer.\n");
+            while (getchar() != '\n');
+        }
+    } while ( n &gt; 100 || n &lt; 0 );
+    
+
+    head = n  / 10;
+
+    switch (head) {
+        case 9: case 10:
+            printf("Letter grade: A\n"); break;
+       case 8:
+            printf("Letter grade: B\n"); break;
+       case 7:
+            printf("Letter grade: C\n"); break;
+       case 6:
+            printf("Letter grade: D\n"); break;
+       default:
+            printf("Letter grade: F\n"); break;
+    }
+
+
+    return 0;
+}
+</code></pre>
+<p>[[Clang]]</p>
+<div style="break-before: page; page-break-before: always;"></div><p>ASCII
+typdef
+sizeof
+&lt;ctype.h&gt;</p>
+<h2 id="用ascii轉換大小寫字母"><a class="header" href="#用ascii轉換大小寫字母">用ASCII轉換大小寫字母</a></h2>
+<pre><code class="language-C">/*Capital and lowercase traslate(use ASCII)*/
+
+#include &lt;stdio.h&gt;
+
+int main(void){
+
+    char ch;
+    int i;
+
+    printf("Enter a lowercase: ");
+    scanf("%c", &amp;ch);
+
+    if ('a' &lt;= ch &amp;&amp; ch &lt;= 'z')     // ASCII 97~122
+        ch = ch - 'a' + 'A';         //offset
+    else
+     printf("Error: Plase enter a-z lowercase.");
+
+    printf("Capital is:%c ", ch);
+                    
+    
+
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="讀字串長度"><a class="header" href="#讀字串長度">讀字串長度</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    char ch;
+    int len = 0;
+
+    printf("Enter a message: ");
+    scanf("%c", &amp;ch);
+    while ( ch != '\n' ){
+        len++;
+        printf("%c\n", ch);
+        ch = getchar();
+    }  
+    printf("Your message was %d character(s) long\n", len);
+
+    return 0;
+}
+</code></pre>
+<h2 id="運算平方-可暫停"><a class="header" href="#運算平方-可暫停">運算平方, 可暫停</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main(void){
+    
+    int i, n;
+    char c = '\n';
+    
+    printf("This program prints a table of squares.\n");
+    printf("Enter number of entries in table: ");    
+    scanf("%d", &amp;n);
+
+    while ( getchar() != '\n' ) ;         //clear the  buffer
+
+    for ( i = 1; i &lt;= n; i++ ){
+        while ( i % 24 == 0 ) {
+            printf("Press Enter to continue...");
+            scanf("%c", &amp;c);
+            break;
+        }
+        printf("%10d%10d\n", i, i * i);
+    }
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="電腦號碼字母轉換"><a class="header" href="#電腦號碼字母轉換">電腦號碼字母轉換</a></h2>
+<pre><code class="language-C">#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void){
+
+    int ch;
+
+    printf("Enter phone number:");
+
+    //main logic
+    while ((ch = getchar()) != '\n') {
+        ch = toupper(ch);
+
+        if ('A' &lt;= ch &amp;&amp; ch &lt;= 'C') putchar('2');
+        else if ('D' &lt;= ch &amp;&amp; ch &lt;= 'F') putchar('3');
+        else if ('G' &lt;= ch &amp;&amp; ch &lt;= 'I') putchar('4');
+        else if ('J' &lt;= ch &amp;&amp; ch &lt;= 'L') putchar('5');
+        else if ('M' &lt;= ch &amp;&amp; ch &lt;= 'O') putchar('6');
+        else if ('P' &lt;= ch &amp;&amp; ch &lt;= 'S') putchar('7');
+        else if ('T' &lt;= ch &amp;&amp; ch &lt;= 'V') putchar('8');
+        else if ('W' &lt;= ch &amp;&amp; ch &lt;= 'Z') putchar('9');
+        else putchar(ch);
+    }
+    putchar('\n');
+    
+
+    return 0;
+}
+</code></pre>
+<h2 id="電腦號碼字母轉換-不用putchar-getchar"><a class="header" href="#電腦號碼字母轉換-不用putchar-getchar">電腦號碼字母轉換-不用putchar, getchar</a></h2>
+<pre><code class="language-C">#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void){
+    char str[10];
+
+    printf("Enter phone number: ");
+    scanf("%11s", str);
+
+    //main logic
+    for ( int i = 0; str[i] != '\0'; i++ ){
+        char c = toupper(str[i]);
+        if ( 'A' &lt;= c &amp;&amp; c &lt;= 'C' ) str[i] = '2';
+        else if ( 'D' &lt;= c &amp;&amp; c &lt;= 'F' ) str[i] = '3';
+        else if ( 'G' &lt;= c &amp;&amp; c &lt;= 'I' ) str[i] = '4';
+        else if ( 'J' &lt;= c &amp;&amp; c &lt;= 'L' ) str[i] = '5';
+        else if ( 'M' &lt;= c &amp;&amp; c &lt;= 'O' ) str[i] = '6';
+        else if ( 'P' &lt;= c &amp;&amp; c &lt;= 'S' ) str[i] = '7';
+        else if ( 'T' &lt;= c &amp;&amp; c &lt;= 'V' ) str[i] = '8';
+        else if ( 'W' &lt;= c &amp;&amp; c &lt;= 'Z' ) str[i] = '9';
+        // default, keep original ch
+    }  
+    printf("%s\n", str);
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="字母加權分數計算"><a class="header" href="#字母加權分數計算">字母加權分數計算</a></h2>
+<pre><code class="language-C">
+#include &lt;ctype.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void){
+
+    int value[26] = {
+        1, 3, 3, 2, 1, 4, 2,        //A-G
+        4, 1, 8, 5, 1, 3, 1,        //H-N
+        1, 3, 10, 1, 1, 1, 1,       //O-U
+        4, 4, 8, 4, 10
+    };
+
+    char str[26];
+    int sum = 0;
+
+    printf("Enter a word: ");
+    scanf("%25s", str);
+    
+    for ( int i = 0; str[i] != '\0'; i++ ){
+        char c = toupper(str[i]);
+
+        if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z'){
+            sum += value[ c - 'A' ];
+        }
+    }
+    printf("Scrabble value: %d", sum);
+    
+
+    return 0;
+}
+
+</code></pre>
+<h2 id="各個各式的佔用大小最小占用大小"><a class="header" href="#各個各式的佔用大小最小占用大小">各個各式的佔用大小(最小占用大小)</a></h2>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+int main (void){
+
+    printf("int: %zu\n", sizeof(int));
+    printf("short: %zu\n", sizeof(short));
+    printf("long: %zu\n", sizeof(long));
+    printf("float: %zu\n", sizeof(float));
+    printf("double: %zu\n", sizeof(double));
+    printf("long double: %zu\n", sizeof(long double));
+
+    return 0;
+}
+
+</code></pre>
+<p>[[Clang]]</p>
 
                     </main>
 
@@ -2711,6 +2540,7 @@ impl App {
             window.setTimeout(window.print, 100);
         });
         </script>
+
 
     </div>
     </body>
