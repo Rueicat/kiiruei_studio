@@ -21,5 +21,6 @@ additional-css = ["./theme/custom.css", "./theme/mdbook-admonish.css"]
 git-repository-url = "https://github.com/Rueicat/code_practice"
 git-repository-icon = "fa-github"
 
-#katex處理數學符號或公式
+# katex處理數學符號或公式
+# cargo install mdbook-katex
 [preprocessor.katex]
