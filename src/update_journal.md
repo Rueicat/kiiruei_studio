@@ -7,6 +7,9 @@
 * 期待用最小的資源, 完成各種解決方案
 
 ```admonish note title="更新日記"
+### 2026.04.19
+* 增加AI項目(使用open webui串接ollama, docker on Debian linux)
+---
 ### 2026.04.07
 * 這段時間換工作, 忙碌, 重新開始更新內容
 * 增加Clang頁籤

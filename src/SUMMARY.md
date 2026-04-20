@@ -12,6 +12,7 @@
 - [演算法(algorithms)研究](./algorithms/algo_intro.md)
     - [資料結構](./algorithms/data_struct.md)
 - [TUI框架](./tui_framework/introduce.md)
+- [AI對話](./ai/ai.md)
 - [心術](./intentions/resolution_md.md)
     - [心術](./intentions/intensions.md)
 - [Clang](./Clang/Clang.md)
