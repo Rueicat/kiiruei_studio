@@ -7,6 +7,9 @@
 * 期待用最小的資源, 完成各種解決方案
 
 ```admonish note title="更新日記"
+### 2026.05.02
+* 增加Tiles_Survive開發項目
+---
 ### 2026.04.19
 * 增加AI項目(使用open webui串接ollama, docker on Debian linux)
 ---

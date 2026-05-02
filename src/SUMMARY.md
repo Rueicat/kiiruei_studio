@@ -9,6 +9,8 @@
 - [雲端服務(private)](./service/nas.md)
 - [記帳服務(private)](./service/budget.md)
 - [台灣身份證驗證](./twid/twid_demo.md)
+- [點點大作戰](./tiles_survive/Update.md)
+    - [點點日記](./tiles_survive/Journal.md)
 - [演算法(algorithms)研究](./algorithms/algo_intro.md)
     - [資料結構](./algorithms/data_struct.md)
 - [TUI框架](./tui_framework/introduce.md)
