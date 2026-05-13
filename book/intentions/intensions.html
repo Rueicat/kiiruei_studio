@@ -38,6 +38,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
@@ -94,10 +95,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -151,7 +155,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -255,6 +264,10 @@
 <p>  兵有長短，敵我一也。敢問：“吾之所長，吾出而用之，彼將不與吾校；吾之所短，吾蔽而置之，彼將強與吾角，奈何？”曰：“吾之所短，吾抗而暴之，使之疑而卻；吾之所長，吾陰而養之，使之狎而墮其中。此用長短之術也。”</p>
 <p>  善用兵者，使之無所顧，有所恃。無所顧，則知死之不足惜；有所恃，則知不至於必敗。尺箠當猛虎，奮呼而操擊；徒手遇蜥蜴，變色而卻步，人之情也。知此者，可以將矣。袒裼而案劍，則烏獲不敢逼；冠冑衣甲，據兵而寢，則童子彎弓殺之矣。故善用兵者以形固。夫能以形固，則力有餘矣。</p>
 <hr />
+<p>想當一個主將, 需要先磨練自己的心志, 依照原文, 個人解釋, 應當要有智慧而嚴厲, 智慧讓人不可預測; 嚴厲讓人不敢侵犯. 這樣士兵才願意聽你的話與賣命. 所以當一個leader其實不容易的, 總要面對各種評判, 挫折, 卻要依然維持穩定的心志, 才能向下養兵, 壯大團隊.</p>
+<p>面對敵人, 感覺蘇洵比較保守(?), 他是認為, 主將通常會利用兵, 去探敵人的虛實, 因此才可以動之於險. 這道理我有發現, 在玩遊戲-世紀帝國的時候, 以前只會努力存資源, 造兵...後來才比較有體會, 通常是需要先派斥候去看看敵人的情況, 如果發現敵人在建造弓箭手, 自己就應當開始作相對的措施防禦; 當地人攻擊進來, 我方一定有損傷, 但不需要放棄太早, 自亂陣腳, 也是先看看敵人後備的情況, 調整自己的狀態, 讓這個局勢慢慢對自己有利. 這都不是一時半刻的事情, 會有一個發展的過程.</p>
+<p>換成自己的人生策略, 人們往往急著看到成果, 或一杯水還沒裝滿的情況下, 就認為自己的投資是無效的. 其實很多時候, 只是微調的時間不夠, 智商的差距或其他不可變因素, 可能沒有想像中的大.</p>
+<hr />
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -278,7 +291,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../Clang/Clang.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../intentions/determined.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -292,29 +305,13 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../Clang/Clang.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../intentions/determined.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
@@ -332,6 +329,7 @@
         <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
+
 
 
     </div>
