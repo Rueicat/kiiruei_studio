@@ -7,6 +7,10 @@
 * 期待用最小的資源, 完成各種解決方案
 
 ```admonish note title="更新日記"
+### 2026.07.21
+* 架設任務伺服器, 跨裝置, 自管使用
+* zero turst policy 調整
+---
 ### 2026.06.24
 * Connect 架設私有nas給joplin同步使用
 ---
