@@ -271,6 +271,17 @@
 <a class="admonition-anchor-link" href="#admonition-更新日記"></a>
 </div>
 <div>
+<h3 id="20260721"><a class="header" href="#20260721">2026.07.21</a></h3>
+<ul>
+<li>架設任務伺服器, 跨裝置, 自管使用</li>
+<li>zero turst policy 調整</li>
+</ul>
+<hr />
+<h3 id="20260624"><a class="header" href="#20260624">2026.06.24</a></h3>
+<ul>
+<li>Connect 架設私有nas給joplin同步使用</li>
+</ul>
+<hr />
 <h3 id="20260502"><a class="header" href="#20260502">2026.05.02</a></h3>
 <ul>
 <li>增加Tiles_Survive開發項目</li>
@@ -360,6 +371,22 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 
