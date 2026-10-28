@@ -6,6 +6,7 @@
     - [評估簡述工具](./service/report.md)
     - [個案管理平台](./service/access.md)
 - [職護行政解決方案](./archive/PRA_ForOHN.md)
+- [資訊技術分享區](./service/book.md)
 - [雲端服務(private)](./service/nas.md)
 - [記帳服務(private)](./service/budget.md)
 - [數據資料庫(private)](./service/datasql.md)
